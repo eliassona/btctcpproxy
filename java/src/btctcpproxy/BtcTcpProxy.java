@@ -31,7 +31,7 @@ public class BtcTcpProxy {
 	}
 	
 	public void start() throws IOException {
-		server.bind(new InetSocketAddress("localhost", PORT));
+		server.bind(new InetSocketAddress("10.0.1.18", PORT));
 //		server.bind(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
 		new Thread(() -> {
 			while (true) {
@@ -58,6 +58,7 @@ public class BtcTcpProxy {
 					try {
 						System.out.println("read line...");
 						final String line = in.readLine();
+						if (line == null) break;
 						System.out.println(String.format("Recived line: %s", line));
 						final Object res = btcRpcFn.invoke(line);
 						System.out.println(String.format("res: %s", res));
@@ -71,6 +72,12 @@ public class BtcTcpProxy {
 				}
 			} catch (final IOException e1) {
 				e1.printStackTrace();
+			} finally {
+				try {
+					socket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}).start();
 	}
