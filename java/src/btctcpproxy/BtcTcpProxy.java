@@ -11,19 +11,22 @@ import clojure.java.api.Clojure;
 import clojure.lang.IFn;
 
 public class BtcTcpProxy {
+	private static final int PORT = 8579;
 	private static final String CLOJURE_CORE = "clojure.core";
 	private static final String BTCPROXY_CORE = "btctcpproxy.core";
 	private static IFn require;
 	private static IFn btcRpcFn;
 	private final ServerSocket server;
 	public BtcTcpProxy() throws IOException {
-		server = new ServerSocket(8579);
+		server = new ServerSocket(PORT);
 	}
 	public static void main(final String[] args) throws IOException {
+		System.out.println("starting btctcpproxy...");
 		require = Clojure.var(CLOJURE_CORE, "require");
 		require.invoke(Clojure.read(BTCPROXY_CORE));
-		btcRpcFn= Clojure.var(BTCPROXY_CORE, "btc-rpc-fn-block");
+		btcRpcFn= Clojure.var(BTCPROXY_CORE, "btc-rpc-fn");
 		new BtcTcpProxy().start();
+		System.out.println("started btctcpproxy at " + PORT);
 	}
 	
 	public void start() {
