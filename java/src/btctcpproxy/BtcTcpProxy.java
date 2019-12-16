@@ -31,11 +31,14 @@ public class BtcTcpProxy {
 	}
 	
 	public void start() throws IOException {
-		server.bind(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
+		server.bind(new InetSocketAddress("localhost", PORT));
+//		server.bind(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
 		new Thread(() -> {
 			while (true) {
 				try {
+					System.out.println("waiting for incoming connections");
 					startConnection(server.accept());
+					System.out.println("accepted connection");
 				} catch (final IOException e) {
 					e.printStackTrace();
 				}
