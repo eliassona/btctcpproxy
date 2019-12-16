@@ -47,11 +47,13 @@ public class BtcTcpProxy {
 
 	private void startConnection(final Socket socket) {
 		new Thread(() -> {
+			System.out.println("connection started");
 			try {
 				final BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				while (true) {
 					try {
+						System.out.println("read line...");
 						final String line = in.readLine();
 						System.out.println(String.format("Recived line: %s", line));
 						final Object res = btcRpcFn.invoke(line);
