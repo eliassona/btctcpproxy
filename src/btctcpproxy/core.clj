@@ -22,7 +22,7 @@
   (let [json-map (json/read-str json-text)
         {:keys [user password url]} config]
         (-> (client/post url 
-                         {:body (assoc json-map :id  (str "id" (swap! id inc)))
+                         {:body (json/json-str (assoc json-map :id  (str "id" (swap! id inc))))
                           :headers {"Content-Type" "application/json; charset=utf-8"}
                           :basic-auth [user password]
                           :throw-entire-message? true}) :body identity)))
