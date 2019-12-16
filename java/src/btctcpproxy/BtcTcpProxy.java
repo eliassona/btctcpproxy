@@ -53,7 +53,9 @@ public class BtcTcpProxy {
 				while (true) {
 					try {
 						final String line = in.readLine();
+						System.out.println(String.format("Recived line: %s", line));
 						final Object res = btcRpcFn.invoke(line);
+						System.out.println(String.format("res: %s", res));
 						if (res != null) {
 							out.writeChars(res.toString());
 							out.flush();
