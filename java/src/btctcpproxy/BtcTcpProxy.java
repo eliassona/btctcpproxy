@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,7 +20,7 @@ public class BtcTcpProxy {
 	private static IFn btcRpcFn;
 	private final ServerSocket server;
 	public BtcTcpProxy() throws IOException {
-		server = new ServerSocket(PORT);
+		server = new ServerSocket();
 	}
 	public static void main(final String[] args) throws IOException {
 		System.out.println("starting btctcpproxy...");
@@ -26,10 +28,10 @@ public class BtcTcpProxy {
 		require.invoke(Clojure.read(BTCPROXY_CORE));
 		btcRpcFn= Clojure.var(BTCPROXY_CORE, "btc-rpc-fn");
 		new BtcTcpProxy().start();
-		System.out.println("started btctcpproxy at " + PORT);
 	}
 	
-	public void start() {
+	public void start() throws IOException {
+		server.bind(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
 		new Thread(() -> {
 			while (true) {
 				try {
@@ -40,6 +42,7 @@ public class BtcTcpProxy {
 
 			}
 		}).start();
+		System.out.println("started btctcpproxy at " + server);
 	}
 
 	private void startConnection(final Socket socket) {
