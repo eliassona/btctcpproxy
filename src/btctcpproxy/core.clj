@@ -18,14 +18,13 @@
          :url (sys-prop-of "bitcoinrpc.url" "http://localhost:8392")}))
 
 (defn btc-rpc-fn 
-  ([json-text config]
-  (let [json-map (json/read-str json-text)
-        {:keys [user password url]} config]
-        (-> (client/post url 
-                         {:body (json/json-str (assoc json-map :id  (str "id" (swap! id inc))))
-                          :headers {"Content-Type" "application/json; charset=utf-8"}
-                          :basic-auth [user password]
-                          :throw-entire-message? true}) :body identity)))
+  ([json-map config]
+      (let [{:keys [user password url]} config]
+      (-> (client/post url 
+                       {:body (json/json-str (assoc json-map :id  (str "id" (swap! id inc))))
+                        :headers {"Content-Type" "application/json; charset=utf-8"}
+                        :basic-auth [user password]
+                        :throw-entire-message? true}) :body identity)))
   ([json-text]
     (btc-rpc-fn json-text @config)))
 
