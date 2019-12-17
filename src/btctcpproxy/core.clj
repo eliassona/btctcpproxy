@@ -30,3 +30,13 @@
     (btc-rpc-fn json-text @config)))
 
 
+
+(defmulti decode-cmd (fn [json-map] (json-map "cmd")))
+
+(defn parse-cmd [cmd]
+  (decode-cmd (if (string? cmd) (json/read-str cmd) cmd)))
+
+
+(defmethod decode-cmd "rpc" [cmd] (btc-rpc-fn (cmd "payload")))
+
+

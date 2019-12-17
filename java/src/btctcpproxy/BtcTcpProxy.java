@@ -17,7 +17,7 @@ public class BtcTcpProxy {
 	private static final String CLOJURE_CORE = "clojure.core";
 	private static final String BTCPROXY_CORE = "btctcpproxy.core";
 	private static IFn require;
-	private static IFn btcRpcFn;
+	private static IFn parseCmd;
 	private final ServerSocket server;
 	public BtcTcpProxy() throws IOException {
 		server = new ServerSocket();
@@ -26,7 +26,7 @@ public class BtcTcpProxy {
 		System.out.println("starting btctcpproxy...");
 		require = Clojure.var(CLOJURE_CORE, "require");
 		require.invoke(Clojure.read(BTCPROXY_CORE));
-		btcRpcFn= Clojure.var(BTCPROXY_CORE, "btc-rpc-fn");
+		parseCmd = Clojure.var(BTCPROXY_CORE, "parse-cmd");
 		new BtcTcpProxy().start();
 	}
 	
@@ -60,7 +60,7 @@ public class BtcTcpProxy {
 						final String line = in.readLine();
 						if (line == null) break;
 						System.out.println(String.format("Recived line: %s", line));
-						final Object res = btcRpcFn.invoke(line);
+						final Object res = parseCmd.invoke(line);
 						System.out.println(String.format("res: %s", res));
 						if (res != null) {
 							out.writeChars(res.toString());
