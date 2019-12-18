@@ -24,7 +24,7 @@
                          {:body (dbg (json/json-str (assoc json-map :id  (str "id" (swap! id inc)))))
                           :headers {"Content-Type" "application/json; charset=utf-8"}
                           :basic-auth [user password]
-                          :throw-entire-message? true}) :body identity)))
+                          :throw-entire-message? true}) :body json/read-str)))
   ([json-text]
     (btc-rpc-fn json-text @config)))
 
@@ -34,7 +34,7 @@
 
 (defn parse-cmd [cmd]
   (dbg cmd)
-  (decode-cmd (if (string? cmd) (json/read-str cmd) cmd)))
+  (json/json-str (decode-cmd (if (string? cmd) (json/read-str cmd) cmd))))
 
 
 (defmethod decode-cmd "rpc" [cmd] (btc-rpc-fn (dbg (cmd "payload")) @config))
